@@ -18,7 +18,7 @@ jobs:
       - name: 'Get Previous tag'
         id: previoustag
         run: |
-          git describe --always
+          git pull master
           LAST_VERSION=$(git describe --abbrev=0 --tags | sed 's/* //'  )
           echo "Last Version: ${LAST_VERSION}"
           echo "::set-output name=previous_tag::${FULL_VERSION}"
