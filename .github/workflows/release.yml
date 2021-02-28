@@ -40,3 +40,4 @@ jobs:
           minor_version: ${{ steps.semvers.outputs.minor }}
         run: |
           echo "will publish minor version: ${minor_version}"
+
