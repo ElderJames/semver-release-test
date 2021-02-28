@@ -17,16 +17,15 @@ jobs:
       
       - name: 'Get Previous tag'
         id: previoustag
-        run: |
-          LAST_VERSION=$(git describe --abbrev=0 --tags | sed 's/* //'  )
-          echo "Last Version: ${LAST_VERSION}"
-          echo "::set-output name=previous_tag::${FULL_VERSION}"
-      
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          
       - name: 'Get next minor version'
         id: semvers
         uses: "WyriHaximus/github-action-next-semvers@v1"
         with:
-          version: ${{ steps.previoustag.outputs.previous_tag }}
+          version: ${{ steps.previoustag.outputs.tag }}
 
       - name: 'Publish Nightly Build - Master'
         id: publish_master
