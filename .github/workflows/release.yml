@@ -25,7 +25,7 @@ jobs:
 
       - name: 'Publish Nightly Build - Master'
         id: publish_master
-        if: github.ref = 'refs/heads/master'
+        if: github.ref == 'refs/heads/master'
         with:
           patch_version: ${{ steps.semvers.outputs.patch }}
         run: |
@@ -33,7 +33,7 @@ jobs:
 
       - name: 'Publish Nightly Build - Feature'
         id: publish_feature
-        if: github.ref = 'refs/heads/feature'
+        if: github.ref == 'refs/heads/feature'
         with:
           minor_version: ${{ steps.semvers.outputs.minor }}
         run: |
