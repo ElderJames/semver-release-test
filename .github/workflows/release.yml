@@ -11,12 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
       
       - name: 'Get Previous tag'
         id: previoustag
         run: |
           LAST_VERSION=$(git describe --abbrev=0 --tags | sed 's/* //'  )
+          echo "Last Version: ${LAST_VERSION}"
           echo "::set-output name=previous_tag::${FULL_VERSION}"
       
       - name: 'Get next minor version'
