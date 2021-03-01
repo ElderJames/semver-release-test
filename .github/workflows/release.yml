@@ -38,17 +38,17 @@ jobs:
           echo Current git branch is $current_branch
           if [ "$current_branch" == 'master' ] ; 
             then
-              echo "::set-output name=next_version::${minor_version}"
+              next_version=${minor_version}"
             else
-              echo "::set-output name=next_version::${patch_version}"
+              next_version=${patch_version}"
           fi
+          echo Will release version $next_version for branch $current_branch
+          echo "::set-output name=next_version::${next_version}"
         env:
           patch_version: ${{ steps.semvers.outputs.patch }}
           minor_version: ${{ steps.semvers.outputs.minor }}
 
-      - name: 'Publish Nightly Build - Master'
-        id: publish_master
-        if: github.ref == 'refs/heads/master'
+      - name: 'Publish Nightly Build'
         env:
           next_version: ${{ steps.get_next_version.outputs.next_version }}
         run: |
