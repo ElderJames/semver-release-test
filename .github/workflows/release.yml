@@ -19,7 +19,6 @@ jobs:
         id: previoustag
         run: |
           git fetch --tags
-          # This suppress an error occurred when the repository is a complete one.
           git fetch --prune --unshallow || true
           LAST_VERSION=$(git describe --abbrev=0 --tags)
           echo "Last Version: ${LAST_VERSION}"
@@ -31,19 +30,27 @@ jobs:
         with:
           version: ${{ steps.previoustag.outputs.previous_tag }}
 
-      - name: 'Publish Nightly Build - Master'
-        id: publish_master
-        if: github.ref == 'refs/heads/master'
+      - name: 'Get Next Version'
+        id: get_next_version
+        run: |
+          current_branch=$(git symbolic-ref --short -q HEAD)
+          echo Current git branch is $current_branch
+          next_version=''
+          if [ "$current_branch" == 'master' ] ; 
+            then
+              next_version=$patch_version
+            else
+              next_version=$minor_version
+          fi
+          echo Will release version $next_version for branch $current_branch
+          echo "::set-output name=next_version::${next_version}"
         env:
           patch_version: ${{ steps.semvers.outputs.patch }}
-        run: |
-          echo "will publish patch version: ${patch_version}"
-
-      - name: 'Publish Nightly Build - Feature'
-        id: publish_feature
-        if: github.ref == 'refs/heads/feature'
-        env:
           minor_version: ${{ steps.semvers.outputs.minor }}
+
+      - name: 'Publish Nightly Build'
+        env:
+          next_version: ${{ steps.get_next_version.outputs.next_version }}
         run: |
-          echo "will publish minor version: ${minor_version}"
+          echo "will publish next version: ${next_version}"
 
