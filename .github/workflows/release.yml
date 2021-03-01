@@ -38,9 +38,9 @@ jobs:
           next_version=''
           if [ "$current_branch" == 'master' ] ; 
             then
-              next_version='${minor_version}'
+              next_version=$minor_version
             else
-              next_version='${patch_version}'
+              next_version=$patch_version
           fi
           echo Will release version $next_version for branch $current_branch
           echo "::set-output name=next_version::${next_version}"
