@@ -31,19 +31,26 @@ jobs:
         with:
           version: ${{ steps.previoustag.outputs.previous_tag }}
 
+      - name: 'Get Next Version'
+        id: get_next_version
+        run: |
+          current_branch=$(git symbolic-ref --short -q HEAD)
+          echo Current git branch is $current_branch
+          if [ "$current_branch" == 'master' ] ; 
+            then
+              echo "::set-output name=next_version::${minor_version}"
+            else
+              echo "::set-output name=next_version::${patch_version}"
+          fi
+        env:
+          patch_version: ${{ steps.semvers.outputs.patch }}
+          minor_version: ${{ steps.semvers.outputs.minor }}
+
       - name: 'Publish Nightly Build - Master'
         id: publish_master
         if: github.ref == 'refs/heads/master'
         env:
-          patch_version: ${{ steps.semvers.outputs.patch }}
+          next_version: ${{ steps.get_next_version.outputs.next_version }}
         run: |
-          echo "will publish patch version: ${patch_version}"
-
-      - name: 'Publish Nightly Build - Feature'
-        id: publish_feature
-        if: github.ref == 'refs/heads/feature'
-        env:
-          minor_version: ${{ steps.semvers.outputs.minor }}
-        run: |
-          echo "will publish minor version: ${minor_version}"
+          echo "will publish next version: ${next_version}"
 
