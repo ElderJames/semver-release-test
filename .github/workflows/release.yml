@@ -23,7 +23,7 @@ jobs:
           git fetch --prune --unshallow || true
           LAST_VERSION=$(git describe --abbrev=0 --tags)
           echo "Last Version: ${LAST_VERSION}"
-          echo "::set-output name=previous_tag::${FULL_VERSION}"
+          echo "::set-output name=previous_tag::${LAST_VERSION}"
       
       - name: 'Get next minor version'
         id: semvers
